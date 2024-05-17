@@ -18,16 +18,17 @@ public class UserController extends BaseController {
     private final SysUserService userService = new SysUserServiceImpl();
 
     public void regist(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String username = req.getParameter("username");
-        String password = req.getParameter("password");
-        SysUser sysUser = new SysUser(null, username, password);
-        int rows = userService.register(sysUser);
+        //获取请求体对象
+        SysUser registUser = WebUtil.readJson(req, SysUser.class);
+        int rows = userService.register(registUser);
+        Result result = null;
         // 3 根据注册结果(成功  失败) 做页面跳转
         if (rows > 0) {
-            resp.sendRedirect("/registSuccess.html");
+            result = Result.ok(null);
         } else {
-            resp.sendRedirect("/registFail.html");
+            result = Result.build(null, ResultCodeEnum.USERNAME_USED);
         }
+        WebUtil.writeJson(resp, result);
     }
 
     public void login(HttpServletRequest req, HttpServletResponse resp) throws IOException {
