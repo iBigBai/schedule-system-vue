@@ -32,20 +32,21 @@ public class UserController extends BaseController {
     }
 
     public void login(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        String username = req.getParameter("username");
-        String password = req.getParameter("password");
+        SysUser loginUser = WebUtil.readJson(req, SysUser.class);
+        String username = loginUser.getUsername();
+        String password = loginUser.getUserPwd();
         SysUser user = userService.findUserByUsername(username);
+        Result result = null;
         if (null == user) {
-            resp.sendRedirect("/regist.html");
+            result = Result.build(null, ResultCodeEnum.USERNAME_ERROR);
         } else if (!MD5Util.encrypt(password).equals(user.getUserPwd())) {
             //3 判断密码是否匹配
-            // 跳转到密码有误提示页
-            resp.sendRedirect("/loginUserPwdError.html");
+            result = Result.build(null, ResultCodeEnum.PASSWORD_ERROR);
         } else {
-            req.getSession().setAttribute("sysUser", user);
-            //4 跳转到首页
-            resp.sendRedirect("/showSchedule.html");
+            //req.getSession().setAttribute("sysUser", user);
+            result=Result.ok(user);
         }
+        WebUtil.writeJson(resp, result);
     }
 
     public void checkUsernameUsed(HttpServletRequest req, HttpServletResponse resp) {
@@ -57,7 +58,6 @@ public class UserController extends BaseController {
         } else {
             // 占用, 创建一个结果为505的对象
             result = Result.build(null, ResultCodeEnum.USERNAME_USED);
-
         }
         // 将result对象转换成JSON并响应给客户端
         WebUtil.writeJson(resp, result);
