@@ -43,8 +43,10 @@ public class UserController extends BaseController {
             //3 判断密码是否匹配
             result = Result.build(null, ResultCodeEnum.PASSWORD_ERROR);
         } else {
-            //req.getSession().setAttribute("sysUser", user);
-            result=Result.ok(user);
+            req.getSession().setAttribute("sysUser", user);
+            //将密码隐藏后返回给客户端
+            user.setUserPwd("******");
+            result = Result.ok(user);
         }
         WebUtil.writeJson(resp, result);
     }

@@ -56,15 +56,14 @@ public class BaseDao {
             resultSet = preparedStatement.executeQuery();
             ResultSetMetaData metaData = resultSet.getMetaData();
             int columnCount = metaData.getColumnCount();
-            Object obj = clazz.getDeclaredConstructor().newInstance();
             while (resultSet.next()) {
+                Object obj = clazz.getDeclaredConstructor().newInstance();
                 for (int i = 1; i <= columnCount; i++) {
                     String columnName = metaData.getColumnLabel(i);
                     Object value = resultSet.getObject(columnName);
                     Field field = clazz.getDeclaredField(columnName);
                     field.setAccessible(true);
                     field.set(obj, value);
-
                 }
                 list.add((T) obj);
             }
