@@ -1,5 +1,6 @@
 # 练习日程管理系统(前后端分离版)-后端
 ## 系统简介
+- 前端项目地址https://github.com/iBigBai/schedule-ui-vue
 - 原生servlet、jsp、tomcat、jdbc、mysql
 - jdk13+mysql5.7+tomcat10.1.19
 ## 初始化配置
